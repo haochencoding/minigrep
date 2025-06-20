@@ -1,6 +1,7 @@
 use std::env;
 use std::fs;
 use std::process;
+use std::error::Error;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -10,10 +11,13 @@ fn main() {
         process::exit(1);
     });
 
-    println!("Search {} in {}", config.query, config.file_path);
+    println!("Searching: {}", config.query);
+    println!("In file: {} \n", config.file_path);
 
-    let contents = fs::read_to_string(config.file_path).unwrap();
-    println!("{contents}");
+    if let Err(e) = run(config) {
+        println!("Application error: {e}");
+        process::exit(1);
+    };
 }
 
 struct Config {
@@ -31,4 +35,10 @@ impl Config {
 
         Ok(Self { query, file_path })
     }
+}
+
+fn run(config: Config) -> Result<(), Box<dyn Error>> {
+    let contents = fs::read_to_string(config.file_path)?;
+    println!("{contents}");
+    Ok(())
 }
