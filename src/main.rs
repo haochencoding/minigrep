@@ -18,13 +18,13 @@ struct Config {
 }
 
 impl Config {
-    fn new(args: &[String]) -> Self {
+    fn new(args: &[String]) -> Result<Self, &'static str > {
         if args.len() < 3 {
-            panic!("No enough arguments. Please specify search query and file path.")
+            return Err("Not enough arguments. Please specify search query and file path.");
         }
         let query = args.get(1).unwrap().clone();
         let file_path = args.get(2).unwrap().clone();
 
-        Self { query, file_path }
+        Ok(Self { query, file_path })
     }
 }
